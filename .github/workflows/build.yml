@@ -22,7 +22,7 @@ jobs:
 
       - name: Extract project ZIP
         run: |
-          unzip -o KasirKuPro-PRO-COMMERCIAL-4.0-MULTI-CABANG.zip -d project
+          unzip -o JualinProAI_v1.zip -d project
           cp -r project/* .
           cp -r project/.[!.]* . 2>/dev/null || true
 
