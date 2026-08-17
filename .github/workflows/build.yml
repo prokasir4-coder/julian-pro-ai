@@ -1,6 +1,5 @@
 name: Build JualinPro AI APK
 
-
 on:
   workflow_dispatch:
   push:
@@ -34,20 +33,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Install dependencies
-        working-directory: ${{ env.PROJECT_DIR }}
-        run: npm install
-
-      - name: Setup Expo
-        uses: expo/expo-github-action@v8
-        with:
-          eas-version: latest
-          token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: Build JualinPro AI APK
-        working-directory: ${{ env.PROJECT_DIR }}
-        run: eas build --platform android --profile preview --non-interactive
 
       - name: Install dependencies
         working-directory: ${{ env.PROJECT_DIR }}
