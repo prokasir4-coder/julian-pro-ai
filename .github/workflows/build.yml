@@ -1,4 +1,4 @@
-name: Build KasirKuPro APK
+name: Juailin Pro Ai  APK
 
 on:
   workflow_dispatch:
