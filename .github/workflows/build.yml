@@ -1,4 +1,4 @@
-name: JualinPro AI APK
+name: Build JualinPro AI APK
 
 on:
   workflow_dispatch:
@@ -14,30 +14,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          flutter-version: '3.35.1'
-          channel: stable
+          node-version: 20
+          cache: npm
 
-      - name: Extract project ZIP
+      - name: Extract JualinPro AI ZIP
         run: |
           unzip -o JualinProAI_v1.zip -d project
-          cp -r project/* .
-          cp -r project/.[!.]* . 2>/dev/null || true
 
-      - name: Generate Flutter platform files
-        run: |
-          flutter create . --platforms=android
-          
-      - name: Get dependencies
-        run: flutter pub get
+          # Cari folder yang berisi package.json
+          PROJECT_DIR=$(find project -name package.json -type f -printf '%h\n' | head -n 1)
 
-      - name: Build APK
-        run: flutter build apk --release
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "package.json tidak ditemukan!"
+            exit 1
+          fi
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+          echo "Project ditemukan di: $PROJECT_DIR"
+          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: npm install
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
         with:
-          name: KasirKuPro-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build JualinPro AI APK
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: eas build --platform android --profile preview --non-interactive
