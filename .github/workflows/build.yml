@@ -1,4 +1,4 @@
-name: Build JualinPro AI APK
+Name: Build JualinPro AI APK
 
 on:
   workflow_dispatch:
@@ -14,13 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Extract project ZIP
+      - name: Extract JualinPro AI ZIP
         run: |
           unzip -o JualinProAI_v1.zip -d project
 
@@ -34,6 +28,25 @@ jobs:
 
           echo "Project ditemukan di: $PROJECT_DIR"
           echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: npm install
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build JualinPro AI APK
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: eas build --platform android --profile preview --non-interactive
 
       - name: Install dependencies
         working-directory: ${{ env.PROJECT_DIR }}
