@@ -20,7 +20,7 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Extract JualinPro AI ZIP
+      - name: Extract project ZIP
         run: |
           unzip -o JualinProAI_v1.zip -d project
 
